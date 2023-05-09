@@ -4,50 +4,188 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.example</groupId>
-  <artifactId>java-excellent-util-dx</artifactId>
-  <version>1.0-SNAPSHOT</version>
+    <!-- groupId 组id，必须和你申请时的一致 -->
+    <!--组id-->
+    <groupId>io.github.dripWaterArun</groupId>
+    <!--工件id-->
+    <artifactId>java-excellent-util-dx</artifactId>
+    <!--版本
+      稳定版：RELEASE
+      快照版：SNAPSHOT
+     -->
+    <version>1.0.0-SNAPSHOT</version>
 
-  <name>java-util-excellent-dx</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+    <!-- 其余信息，自己填 -->
+    <packaging>jar</packaging>
+    <!--项目名-->
+    <name>java-util-excellent-dx</name>
+    <!--描述-->
+    <description>优秀的 java 工具集</description>
+    <!--项目地址-->
+    <url>https://github.com/dripWaterArun/java-excellent-util-dx</url>
 
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.6.7</version>
-  </parent>
+    <!--springboot 父工程-->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.0.6</version>
+    </parent>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
-  </properties>
+    <!-- 开发者信息，根据实际情况修改 -->
+    <developers>
+        <developer>
+            <!--开发者名-->
+            <name>戴煦</name>
+            <!--邮箱-->
+            <email>daixu_arun@sina.com</email>
+            <!--开发者主页-->
+            <url>https://github.com/dripWaterArun</url>
+        </developer>
+    </developers>
 
-  <dependencies>
-    <!--Spring Boot Web Starter-->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-web</artifactId>
-      <optional>true</optional>
-    </dependency>
+    <!-- 项目设定 -->
+    <properties>
+        <jdk.version>18</jdk.version>
+        <maven.compiler.source>${jdk.version}</maven.compiler.source>
+        <maven.compiler.target>${jdk.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
-    <!--junit测试-->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <scope>test</scope>
-    </dependency>
+    <dependencies>
 
-    <!--lombok 插件-->
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.16.10</version>
-      <optional>true</optional>
-    </dependency>
-  </dependencies>
+        <!--Spring Boot Web Starter-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <optional>true</optional>
+            <!--
+              该依赖项不安全存在漏洞，排除它
+              SpringBoot2.x 用的是 1.30 版本，
+              SpringBoot3.x 用的是 1.33 版本，
+              尽管已经升级了版本，但是 1.33 版本仍然存在漏洞。
+             -->
+            <exclusions>
+                <exclusion>
+                    <groupId>org.yaml</groupId>
+                    <artifactId>snakeyaml</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
-  <build>
-  </build>
+        <!--junit测试-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <optional>true</optional>
+            <scope>test</scope>
+        </dependency>
+
+        <!--lombok 插件-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.26</version>
+            <optional>true</optional>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+
+        <pluginManagement>
+            <plugins>
+                <!--指定项目源码 jdk 版本-->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <encoding>UTF-8</encoding>
+                        <source>${jdk.version}</source>
+                        <target>${jdk.version}</target>
+                    </configuration>
+                </plugin>
+
+                <plugin>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.2.1</version>
+                    <executions>
+                        <execution>
+                            <id>attach-sources</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.13</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <serverId>ossrh</serverId>
+                        <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                        <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                    </configuration>
+                </plugin>
+
+                <!-- gpg plugin,用于签名认证 -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>3.1.0</version>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+            </plugins>
+        </pluginManagement>
+
+    </build>
+
+    <!-- 许可证信息，这里是Apache 2.0的许可证，大家根据实际情况修改 -->
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version2.0</name>
+            <url>https://www.apache.org/licenses/</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <!-- 仓库信息，根据实际情况修改 -->
+    <scm>
+        <!--项目git仓库地址-->
+        <url>https://github.com/dripWaterArun/java-excellent-util-dx</url>
+        <!--项目git克隆地址-->
+        <connection>https://github.com/dripWaterArun/java-excellent-util-dx.git</connection>
+        <!--项目git仓库地址-->
+        <developerConnection>https://github.com/dripWaterArun/java-excellent-util-dx.git</developerConnection>
+    </scm>
+
+    <!--定义 snapshots 库和 releases 库的 nexus 地址-->
+    <distributionManagement>
+
+        <!--snapshots：快照版本 -->
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+
+        <!--releases：稳定版本 需要对应到 settings.xml -->
+        <repository>
+            <id>ossrh</id>
+            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+
+    </distributionManagement>
+
 </project>
